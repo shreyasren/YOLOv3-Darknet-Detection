@@ -3,20 +3,20 @@
 
   <arg name="run_darknet" default="true" />
   <arg name="camera_name" default="camera" />
-  <arg name="run_image_proc" default="false" />
+  <arg name="run_image_proc" default="true" />
   <arg name="image_topic" default="image_rect" />
 
   <group ns="$(arg camera_name)" >
-    <node if="$(arg run_darknet)" pkg="yolo_classification" type="yolo_classification" name="yolo_classification" output="screen" >
+    <node if="$(arg run_darknet)" pkg="yolo_classification" type="yolo_classification" name="yolo_classification" output="log" >
       <param name="darknet_cfg_file" value="$(find darknet_ros)/cfg/yolov3.cfg" />
       <param name="darknet_weights_file" value="$(find darknet_ros)/yolov3.weights" />
-      <remap from="image_rect" to="$(arg image_topic)" />
+      <remap from="image_rect_color" to="image_rect" />
     </node>
 
-    <node if="$(arg run_image_proc)" ns="$(arg camera_name)" pkg="image_proc" type="image_proc" name="image_proc" output="screen" />
+    <node if="$(arg run_image_proc)" ns="$(arg camera_name)" pkg="image_proc" type="image_proc" name="image_proc" output="log" />
 
-    <node pkg="yolo_classification" type="synced_yolo_data" name="synced_yolo_data" output="screen" >
-      <remap from="image_rect" to="$(arg image_topic)" />
+    <node pkg="yolo_classification" type="synced_yolo_data" name="synced_yolo_data" output="log" >
+      <remap from="image_rect_color" to="image_rect" />
     </node>
   </group>
 

@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_filters
 )
 find_package(OpenCV REQUIRED)
+find_package(TBB REQUIRED) # Added TBB dependency
 
 if("$ENV{ROS_DISTRO}" STRGREATER "melodic")
   set(CMAKE_CXX_STANDARD 17)
@@ -44,6 +45,10 @@ include_directories(
   ${OpenCV_INCLUDE_DIRS}
 )
 
+# Add TBB include directories
+include_directories(${TBB_INCLUDE_DIRS})
+
+# Yolo Classification Node
 add_executable(${PROJECT_NAME}
   src/yolo_classification.cpp
   src/YoloClassification.cpp
@@ -56,8 +61,10 @@ add_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+  TBB::tbb # Link TBB library
 )
 
+# Synced Yolo Data Node
 add_executable(synced_yolo_data
   src/synced_yolo_data.cpp
   src/SyncedYoloData.cpp
@@ -69,8 +76,10 @@ add_dependencies(synced_yolo_data
 target_link_libraries(synced_yolo_data
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
+  TBB::tbb # Link TBB library
 )
 
+# Install targets
 install(
   TARGETS
     ${PROJECT_NAME}
